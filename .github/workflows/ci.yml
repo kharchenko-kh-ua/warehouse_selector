@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev
+
+      - name: Run linters and tests
+        run: |
+          pipenv run black --check .
+          pipenv run ruff check .
+          PYTHONPATH=. pipenv run pytest
